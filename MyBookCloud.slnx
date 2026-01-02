@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="MyBookCloud.Data/MyBookCloud.Business.csproj" Id="8e909647-7478-41b3-96c4-9e4fa73b6005" />
+  <Project Path="MyBookCloud.Persistence/MyBookCloud.Persistence.csproj" Id="06f08df2-840e-42b6-a5e0-9f87e6e0143c" />
+  <Project Path="MyBookCloud/MyBookCloud.csproj" />
+</Solution>

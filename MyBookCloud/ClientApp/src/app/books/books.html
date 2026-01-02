@@ -1,0 +1,32 @@
+<div class="books-container">
+  <div class="header">
+    <h1>Books Collection</h1>
+    <button (click)="refresh()" [disabled]="loading" class="refresh-btn">
+      {{ loading ? 'Loading...' : 'Refresh' }}
+    </button>
+  </div>
+
+  <div *ngIf="error" class="error-message">
+    <p>{{ error }}</p>
+    <button (click)="refresh()" class="retry-btn">Retry</button>
+  </div>
+
+  <div *ngIf="loading && !error" class="loading">
+    <p>Loading books...</p>
+  </div>
+
+  <div *ngIf="!loading && !error && books.length > 0" class="books-grid">
+    <div *ngFor="let book of books" class="book-card">
+      <div class="title">{{ book.title }}</div>
+      <div class="author">
+        <span class="author-name">{{ book.author }}</span>
+        <span class="rating">Rating: {{ book.averageRating }}</span>
+      </div>
+      <div class="summary">{{ book.note }}</div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && books.length === 0" class="no-data">
+    <p>No books available.</p>
+  </div>
+</div>
