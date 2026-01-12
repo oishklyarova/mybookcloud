@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MyBookCloud.Core.Api\MyBookCloud.Core.Api.csproj" />
     <ProjectReference Include="..\MyBookCloud.Persistence\MyBookCloud.Persistence.csproj" />
   </ItemGroup>
 

@@ -1,4 +1,7 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using MyBookCloud.Business.Books;
+using MyBookCloud.Core.Api.Dto;
 
 namespace MyBookCloud.Controllers
 {
@@ -6,28 +9,20 @@ namespace MyBookCloud.Controllers
     [Route("api/[controller]")]
     public class BooksController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
+        private readonly IMapper mapper;
+        private readonly IBookRepository bookRepository;
 
-        private readonly ILogger<BooksController> _logger;
-
-        public BooksController(ILogger<BooksController> logger)
+        public BooksController(IMapper mapper, IBookRepository bookRepository)
         {
-            _logger = logger;
+            this.mapper = mapper;
+            this.bookRepository = bookRepository;
         }
 
-        //[HttpGet(Name = "GetWeatherForecast")]
-        //public IEnumerable<WeatherForecast> Get()
-        //{
-        //    return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        //    {
-        //        Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-        //        TemperatureC = Random.Shared.Next(-20, 55),
-        //        Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        //    })
-        //    .ToArray();
-        //}
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var books = this.bookRepository.GetAll();
+            return this.Ok(this.mapper.Map<List<BookData>>(books));
+        }
     }
 }

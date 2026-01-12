@@ -1,13 +1,14 @@
 using Microsoft.EntityFrameworkCore;
+using MyBookCloud.Configurations;
 using MyBookCloud.Persistence;
-using System;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
+builder.Services.Configure(builder.Configuration);
 builder.Services.AddDbContext<MyBookCloudDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.ConfigureMapper();
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

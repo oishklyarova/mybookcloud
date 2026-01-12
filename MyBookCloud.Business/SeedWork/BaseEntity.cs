@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyBookCloud.Data.Entities
+namespace MyBookCloud.Business.SeedWork
 {
     public abstract class BaseEntity
     {
@@ -14,7 +14,7 @@ namespace MyBookCloud.Data.Entities
 
         public BaseEntity()
         {
-            this.CreatedAt = DateTime.UtcNow;
+            CreatedAt = DateTime.UtcNow;
         }
     }
 }

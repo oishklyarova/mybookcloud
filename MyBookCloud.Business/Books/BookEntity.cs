@@ -1,3 +1,5 @@
+using MyBookCloud.Business.SeedWork;
+
 namespace MyBookCloud.Data.Entities
 {
     public class BookEntity : BaseEntity
