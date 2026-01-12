@@ -1,5 +1,7 @@
 ﻿namespace MyBookCloud.Core.Api.Dto
 {
+    using MyBookCloud.Business.Books;
+
     public class BookData
     {
         public Guid Id { get; set; }
@@ -13,5 +15,9 @@
         public double? AverageRating { get; set; }
 
         public string? Note { get; set; }
+
+        public ReadingStatus Status { get; set; }
+
+        public int? PersonalRating { get; set; }
     }
 }

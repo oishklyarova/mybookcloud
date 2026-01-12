@@ -1,9 +1,8 @@
 ﻿using MyBookCloud.Business.Books;
-using MyBookCloud.Data.Entities;
 
 namespace MyBookCloud.Persistence.Repositories
 {
-    public class BookRepository : BaseRepository, IBookRepository
+    public class BookRepository : BaseRepository<BookEntity>, IBookRepository
     {
         public BookRepository(MyBookCloudDbContext context) : base(context)
         {

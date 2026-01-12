@@ -1,6 +1,6 @@
 using MyBookCloud.Business.SeedWork;
 
-namespace MyBookCloud.Data.Entities
+namespace MyBookCloud.Business.Books
 {
     public class BookEntity : BaseEntity
     {
@@ -13,5 +13,9 @@ namespace MyBookCloud.Data.Entities
         public double? AverageRating { get; set; }
 
         public string? Note { get; set; }
+
+        public ReadingStatus Status { get; set; }
+
+        public int? PersonalRating { get; set; }
     }
 }

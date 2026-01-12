@@ -1,7 +1,6 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using MyBookCloud.Business.Books;
 using MyBookCloud.Core.Api.Dto;
+using MyBookCloud.Core.Api.Interfaces;
 
 namespace MyBookCloud.Controllers
 {
@@ -9,20 +8,49 @@ namespace MyBookCloud.Controllers
     [Route("api/[controller]")]
     public class BooksController : ControllerBase
     {
-        private readonly IMapper mapper;
-        private readonly IBookRepository bookRepository;
+        private readonly IBookService _bookService;
 
-        public BooksController(IMapper mapper, IBookRepository bookRepository)
+        public BooksController(IBookService bookService)
         {
-            this.mapper = mapper;
-            this.bookRepository = bookRepository;
+            _bookService = bookService;
         }
 
         [HttpGet]
-        public IActionResult Get()
+        public async Task<IActionResult> Get()
         {
-            var books = this.bookRepository.GetAll();
-            return this.Ok(this.mapper.Map<List<BookData>>(books));
+            var books = await _bookService.GetAllBooksAsync();
+            return this.Ok(books);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] BookData bookData)
+        {
+            var result = await _bookService.AddBookAsync(bookData);
+            return this.Ok(result);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(Guid id, [FromBody] BookData bookData)
+        {
+            var result = await _bookService.UpdateBookAsync(id, bookData);
+            if (result == null)
+            {
+                return this.NotFound();
+            }
+
+            return this.Ok(result);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _bookService.DeleteBookAsync(id);
+            if (!result)
+            {
+                return this.NotFound();
+            }
+
+            return this.NoContent();
         }
     }
 }

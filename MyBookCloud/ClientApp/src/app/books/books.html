@@ -1,14 +1,16 @@
 <div class="books-container">
   <div class="header">
     <h1>Books Collection</h1>
-    <button (click)="refresh()" [disabled]="loading" class="refresh-btn">
-      {{ loading ? 'Loading...' : 'Refresh' }}
-    </button>
+    <div class="actions">
+      <button mat-raised-button color="primary" (click)="addBook()">
+        <mat-icon>add</mat-icon> Add Book
+      </button>
+    </div>
   </div>
 
   <div *ngIf="error" class="error-message">
     <p>{{ error }}</p>
-    <button (click)="refresh()" class="retry-btn">Retry</button>
+    <button mat-raised-button color="warn" (click)="loadBooks()">Retry</button>
   </div>
 
   <div *ngIf="loading && !error" class="loading">
@@ -16,17 +18,34 @@
   </div>
 
   <div *ngIf="!loading && !error && books.length > 0" class="books-grid">
-    <div *ngFor="let book of books" class="book-card">
-      <div class="title">{{ book.title }}</div>
-      <div class="author">
-        <span class="author-name">{{ book.author }}</span>
-        <span class="rating">Rating: {{ book.averageRating }}</span>
-      </div>
-      <div class="summary">{{ book.note }}</div>
-    </div>
+    <mat-card *ngFor="let book of books" class="book-card">
+      <mat-card-header>
+        <mat-card-title>{{ book.title }}</mat-card-title>
+        <mat-card-subtitle>{{ book.author }}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="book-info">
+          <div class="status-badge" [ngClass]="'status-' + book.status">
+            {{ getStatusLabel(book.status) }}
+          </div>
+          <div class="rating" *ngIf="book.personalRating">
+            Rating: <span class="rating-value">{{ book.personalRating }}/5</span>
+          </div>
+        </div>
+        <p class="summary" *ngIf="book.note">{{ book.note }}</p>
+      </mat-card-content>
+      <mat-card-actions align="end">
+        <button mat-icon-button color="primary" (click)="editBook(book)">
+          <mat-icon>edit</mat-icon>
+        </button>
+        <button mat-icon-button color="warn" (click)="deleteBook(book)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </mat-card-actions>
+    </mat-card>
   </div>
 
   <div *ngIf="!loading && !error && books.length === 0" class="no-data">
-    <p>No books available.</p>
+    <p>No books available. Start by adding your first book!</p>
   </div>
 </div>

@@ -11,7 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MyBookCloud.Business\MyBookCloud.Business.csproj" />
+    <ProjectReference Include="..\MyBookCloud.Persistence\MyBookCloud.Persistence.csproj" />
   </ItemGroup>
 
 </Project>

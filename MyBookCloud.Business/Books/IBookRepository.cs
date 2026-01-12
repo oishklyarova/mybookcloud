@@ -1,5 +1,4 @@
 ﻿using MyBookCloud.Business.SeedWork;
-using MyBookCloud.Data.Entities;
 
 namespace MyBookCloud.Business.Books
 {

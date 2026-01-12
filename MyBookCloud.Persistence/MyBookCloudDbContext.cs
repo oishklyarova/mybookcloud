@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using MyBookCloud.Data.Entities;
+using MyBookCloud.Business.Books;
 
 namespace MyBookCloud.Persistence
 {
@@ -16,7 +16,8 @@ namespace MyBookCloud.Persistence
             modelBuilder.Entity<BookEntity>().Property(e => e.Id).IsRequired();
             modelBuilder.Entity<BookEntity>().Property(e => e.Title).IsRequired();
             modelBuilder.Entity<BookEntity>().Property(e => e.Author).IsRequired();
-
+            modelBuilder.Entity<BookEntity>().Property(e => e.Status).IsRequired();
+            modelBuilder.Entity<BookEntity>().Property(e => e.PersonalRating);
         }
     }
 }
