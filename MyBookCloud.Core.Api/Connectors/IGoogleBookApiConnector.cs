@@ -1,11 +1,6 @@
-﻿using MyBookCloud.Core.Api.Dto;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using MyBookCloud.Application.Dto;
 
-namespace MyBookCloud.Core.Api.Connectors
+namespace MyBookCloud.Application.Connectors
 {
     public interface IGoogleBookApiConnector
     {

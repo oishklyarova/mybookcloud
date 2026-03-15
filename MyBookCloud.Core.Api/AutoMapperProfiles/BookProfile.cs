@@ -1,8 +1,8 @@
-namespace MyBookCloud.Core.Api.AutoMapperProfiles
+namespace MyBookCloud.Application.AutoMapperProfiles
 {
     using AutoMapper;
+    using MyBookCloud.Application.Dto;
     using MyBookCloud.Business.Books;
-    using MyBookCloud.Core.Api.Dto;
 
     public class BookProfile : Profile
     {

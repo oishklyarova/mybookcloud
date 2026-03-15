@@ -1,13 +1,15 @@
 using AutoMapper;
 using MassTransit;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using MyBookCloud.Application.Connectors;
+using MyBookCloud.Application.Dto;
 using MyBookCloud.Business.Books;
 using MyBookCloud.Business.SeedWork;
-using MyBookCloud.Core.Api.Dto;
-using MyBookCloud.Core.Api.Messages;
+using MyBookCloud.Common.Messages;
 using MyBookCloud.Persistence;
 
-namespace MyBookCloud.Core.Api.Services.Impl
+namespace MyBookCloud.Application.Services.Impl
 {
     public class BookService : IBookService
     {
@@ -15,19 +17,21 @@ namespace MyBookCloud.Core.Api.Services.Impl
         private readonly IBookRepository _bookRepository;
         private readonly IUnitOfWork<MyBookCloudDbContext> _unitOfWork;
         private readonly IPublishEndpoint _publish;
+        private readonly IGoogleBookApiConnector _googleConnector;
 
         public BookService(IMapper mapper, IBookRepository bookRepository, IUnitOfWork<MyBookCloudDbContext> unitOfWork,
-            IPublishEndpoint publish)
+            IPublishEndpoint publish, IGoogleBookApiConnector googleConnector)
         {
             _mapper = mapper;
             _bookRepository = bookRepository;
             _unitOfWork = unitOfWork;
             _publish = publish;
+            _googleConnector = googleConnector;
         }
 
         public async Task<List<BookData>> GetAllBooksAsync()
         {
-            var books = await _bookRepository.GetAll().ToListAsync();
+            var books = await _bookRepository.GetAll().OrderBy(x => x.Title).ToListAsync();
             return _mapper.Map<List<BookData>>(books);
         }
 
@@ -69,6 +73,21 @@ namespace MyBookCloud.Core.Api.Services.Impl
             _bookRepository.Delete(bookEntity);
             await _unitOfWork.SaveChangesAsync();
             return true;
+        }
+
+        public async Task EnrichBookDataAsync(Guid bookId, string isbn)
+        {
+            if (string.IsNullOrWhiteSpace(isbn)) return;
+
+            var volumeInfo = await _googleConnector.GetVolumeInfoAsync(isbn);
+
+            var book = await _bookRepository.FindAsync(bookId);
+            if (book == null) return;
+
+            book.CoverThumbnailUrl = volumeInfo.ThumbnailUrl;
+            book.PageCount = volumeInfo.PageCount;
+
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

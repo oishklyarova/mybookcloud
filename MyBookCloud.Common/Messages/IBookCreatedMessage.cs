@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MyBookCloud.Core.Api.Messages
+namespace MyBookCloud.Common.Messages
 {
     public interface IBookCreatedMessage
     {

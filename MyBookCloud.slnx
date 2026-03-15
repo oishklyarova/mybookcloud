@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/00.Common/">
+    <Project Path="MyBookCloud.Common/MyBookCloud.Common.csproj" Id="5efd3fca-92a4-4916-98a0-e3230c7cef5e" />
+  </Folder>
   <Folder Name="/01.Business/">
     <Project Path="MyBookCloud.Business/MyBookCloud.Business.csproj" />
   </Folder>
@@ -6,9 +9,13 @@
     <Project Path="MyBookCloud.Persistence/MyBookCloud.Persistence.csproj" Id="06f08df2-840e-42b6-a5e0-9f87e6e0143c" />
   </Folder>
   <Folder Name="/03.Application/">
-    <Project Path="MyBookCloud.Core.Api/MyBookCloud.Core.Api.csproj" />
+    <Project Path="MyBookCloud.Core.Api/MyBookCloud.Application.csproj" />
   </Folder>
-  <Folder Name="/04.Presentation/">
+  <Folder Name="/04.Infrastructure/">
+    <Project Path="MyBookCloud.Infrastructure/MyBookCloud.Infrastructure.csproj" Id="5e2d1f6f-1d25-47c3-addd-886dc7fe75ef" />
+  </Folder>
+  <Folder Name="/05.Presentation/">
+    <Project Path="MyBookCloud.Worker/MyBookCloud.Worker.csproj" Id="97c81595-1430-4690-8a64-582f1ddcee31" />
     <Project Path="MyBookCloud/MyBookCloud.csproj" />
   </Folder>
 </Solution>

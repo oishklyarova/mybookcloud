@@ -1,6 +1,6 @@
 using System.Text.Json.Serialization;
 
-namespace MyBookCloud.Core.Api.Dto
+namespace MyBookCloud.Application.Dto
 {
     public class GoogleBookImageLinksDto
     {
@@ -21,22 +21,6 @@ namespace MyBookCloud.Core.Api.Dto
         /// </summary>
         [JsonIgnore]
         public string? ThumbnailUrl => ImageLinks?.Thumbnail;
-    }
-
-    // Internal DTOs for deserializing Google Books API response
-    internal class GoogleBooksApiResponseDto
-    {
-        [JsonPropertyName("totalItems")]
-        public int TotalItems { get; set; }
-
-        [JsonPropertyName("items")]
-        public List<GoogleBookVolumeDto>? Items { get; set; }
-    }
-
-    internal class GoogleBookVolumeDto
-    {
-        [JsonPropertyName("volumeInfo")]
-        public GoogleBookVolumeInfoDto? VolumeInfo { get; set; }
     }
 }
 

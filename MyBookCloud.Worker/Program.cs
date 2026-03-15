@@ -1,22 +1,21 @@
 using MassTransit;
-using Microsoft.EntityFrameworkCore;
 using MyBookCloud.Application.Configurations;
 using MyBookCloud.Persistence.Configurations;
 using MyBookCloud.Infrastructure.Configurations;
+using MyBookCloud.Worker.Consumers;
 using Serilog;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = Host.CreateApplicationBuilder(args);
 
-// Add services to the container.
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddApplication(builder.Configuration);
-builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+
 builder.Services.AddMassTransit(x =>
 {
+    x.SetKebabCaseEndpointNameFormatter();
+    x.AddConsumer<BookCreatedConsumer>();
+
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration["Bus:RabbitMqHost"], builder.Configuration["Bus:RabbitMqVirtualHost"], h =>
@@ -24,6 +23,7 @@ builder.Services.AddMassTransit(x =>
             h.Username(builder.Configuration["Bus:RabbitMqUsername"]);
             h.Password(builder.Configuration["Bus:RabbitMqPassword"]);
         });
+        cfg.ConfigureEndpoints(context);
     });
 });
 
@@ -31,21 +31,7 @@ Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
 
-builder.Host.UseSerilog();
+builder.Services.AddSerilog();
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
-
-app.Run();
+var host = builder.Build();
+host.Run();

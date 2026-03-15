@@ -1,4 +1,4 @@
-namespace MyBookCloud.Core.Api.Dto
+namespace MyBookCloud.Application.Dto
 {
     using MyBookCloud.Business.Books;
 

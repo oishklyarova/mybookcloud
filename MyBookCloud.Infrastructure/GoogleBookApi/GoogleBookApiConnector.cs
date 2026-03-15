@@ -4,9 +4,10 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using MyBookCloud.Core.Api.Dto;
+using MyBookCloud.Application.Connectors;
+using MyBookCloud.Application.Dto;
 
-namespace MyBookCloud.Core.Api.Connectors.Impl
+namespace MyBookCloud.Infrastructure.GoogleBookApi
 {
     public class GoogleBookApiConnector : IGoogleBookApiConnector
     {

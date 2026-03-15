@@ -1,6 +1,6 @@
-using MyBookCloud.Core.Api.Dto;
+using MyBookCloud.Application.Dto;
 
-namespace MyBookCloud.Core.Api.Services
+namespace MyBookCloud.Application.Services
 {
     public interface IBookService
     {
@@ -8,6 +8,7 @@ namespace MyBookCloud.Core.Api.Services
         Task<BookData> AddBookAsync(BookData bookData);
         Task<BookData?> UpdateBookAsync(Guid id, BookData bookData);
         Task<bool> DeleteBookAsync(Guid id);
+        Task EnrichBookDataAsync(Guid bookId, string isbn);
     }
 }
 
