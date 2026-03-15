@@ -1,5 +1,7 @@
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using MyBookCloud.Configurations;
+using MyBookCloud.Core.Api.Consumers;
 using MyBookCloud.Persistence;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,15 +15,18 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-// Add CORS
-builder.Services.AddCors(options =>
+builder.Services.AddMassTransit(x =>
 {
-    options.AddPolicy("AllowAngularApp", policy =>
+    x.SetKebabCaseEndpointNameFormatter();
+    x.AddConsumer<BookCreatedConsumer>();
+    x.UsingRabbitMq((context, cfg) =>
     {
-        policy.WithOrigins("http://localhost:49375")
-              .AllowAnyHeader()
-              .AllowAnyMethod();
+        cfg.Host(builder.Configuration["Bus:RabbitMqHost"], builder.Configuration["Bus:RabbitMqVirtualHost"], h =>
+        {
+            h.Username(builder.Configuration["Bus:RabbitMqUsername"]);
+            h.Password(builder.Configuration["Bus:RabbitMqPassword"]);
+        });
+        cfg.ConfigureEndpoints(context);
     });
 });
 
@@ -35,9 +40,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
-// Use CORS
-app.UseCors("AllowAngularApp");
 
 app.UseAuthorization();
 

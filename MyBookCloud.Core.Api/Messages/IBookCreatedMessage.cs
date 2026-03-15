@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace MyBookCloud.Core.Api.Messages
+{
+    public interface IBookCreatedMessage
+    {
+        public Guid BookId { get; set; }
+
+        public string Isbn { get; set; }
+    }
+}

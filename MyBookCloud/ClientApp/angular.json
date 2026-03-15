@@ -24,7 +24,7 @@
       "sourceRoot": "src",
       "prefix": "app",
       "architect": {
-        "build": {
+      "build": {
           "builder": "@angular/build:application",
           "options": {
             "browser": "src/main.ts",
@@ -68,7 +68,8 @@
         },
         "serve": {
           "options": {
-            "port": 49375
+            "port": 49375,
+            "proxyConfig": "proxy.conf.json"
           },
           "builder": "@angular/build:dev-server",
           "configurations": {

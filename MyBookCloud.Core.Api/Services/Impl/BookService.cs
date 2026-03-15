@@ -1,24 +1,28 @@
 using AutoMapper;
+using MassTransit;
 using Microsoft.EntityFrameworkCore;
 using MyBookCloud.Business.Books;
 using MyBookCloud.Business.SeedWork;
 using MyBookCloud.Core.Api.Dto;
-using MyBookCloud.Core.Api.Interfaces;
+using MyBookCloud.Core.Api.Messages;
 using MyBookCloud.Persistence;
 
-namespace MyBookCloud.Core.Api.Services
+namespace MyBookCloud.Core.Api.Services.Impl
 {
     public class BookService : IBookService
     {
         private readonly IMapper _mapper;
         private readonly IBookRepository _bookRepository;
         private readonly IUnitOfWork<MyBookCloudDbContext> _unitOfWork;
+        private readonly IPublishEndpoint _publish;
 
-        public BookService(IMapper mapper, IBookRepository bookRepository, IUnitOfWork<MyBookCloudDbContext> unitOfWork)
+        public BookService(IMapper mapper, IBookRepository bookRepository, IUnitOfWork<MyBookCloudDbContext> unitOfWork,
+            IPublishEndpoint publish)
         {
             _mapper = mapper;
             _bookRepository = bookRepository;
             _unitOfWork = unitOfWork;
+            _publish = publish;
         }
 
         public async Task<List<BookData>> GetAllBooksAsync()
@@ -32,6 +36,11 @@ namespace MyBookCloud.Core.Api.Services
             var bookEntity = _mapper.Map<BookEntity>(bookData);
             _bookRepository.Add(bookEntity);
             await _unitOfWork.SaveChangesAsync();
+            await _publish.Publish<IBookCreatedMessage>(new
+            {
+                BookId = bookEntity.Id,
+                bookEntity.Isbn
+            });
             return _mapper.Map<BookData>(bookEntity);
         }
 

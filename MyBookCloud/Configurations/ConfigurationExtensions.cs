@@ -2,8 +2,8 @@
 using MyBookCloud.Business.Books;
 using MyBookCloud.Business.SeedWork;
 using MyBookCloud.Core.Api.AutoMapperProfiles;
-using MyBookCloud.Core.Api.Interfaces;
 using MyBookCloud.Core.Api.Services;
+using MyBookCloud.Core.Api.Services.Impl;
 using MyBookCloud.Persistence;
 using MyBookCloud.Persistence.Repositories;
 

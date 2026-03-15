@@ -1,6 +1,6 @@
 using MyBookCloud.Core.Api.Dto;
 
-namespace MyBookCloud.Core.Api.Interfaces
+namespace MyBookCloud.Core.Api.Services
 {
     public interface IBookService
     {
