@@ -1,4 +1,5 @@
-﻿using MyBookCloud.Business.Books;
+﻿using Microsoft.EntityFrameworkCore;
+using MyBookCloud.Business.Books;
 
 namespace MyBookCloud.Persistence.Repositories
 {
@@ -11,6 +12,15 @@ namespace MyBookCloud.Persistence.Repositories
         public IQueryable<BookEntity> GetAll()
         {
             return context.Books;
+        }
+
+        public async Task<BookEntity?> FindAsync(Guid id)
+        {
+            var book = await context.Books
+                .Where(b => b.Id == id)
+                .SingleOrDefaultAsync();
+
+            return book;
         }
     }
 }

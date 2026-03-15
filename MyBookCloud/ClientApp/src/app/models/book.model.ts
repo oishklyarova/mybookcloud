@@ -13,4 +13,8 @@ export interface Book {
   averageRating?: number;
   status: ReadingStatus;
   personalRating?: number;
+
+  coverThumbnailUrl?: string;
+
+  pageCount?: number;
 }

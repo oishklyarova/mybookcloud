@@ -1,4 +1,4 @@
-﻿namespace MyBookCloud.Core.Api.Dto
+namespace MyBookCloud.Core.Api.Dto
 {
     using MyBookCloud.Business.Books;
 
@@ -19,5 +19,9 @@
         public ReadingStatus Status { get; set; }
 
         public int? PersonalRating { get; set; }
+
+        public string? CoverThumbnailUrl { get; set; }
+
+        public int? PageCount { get; set; }
     }
 }

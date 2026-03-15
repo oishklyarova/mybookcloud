@@ -24,15 +24,40 @@
         <mat-card-subtitle>{{ book.author }}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
-        <div class="book-info">
-          <div class="status-badge" [ngClass]="'status-' + book.status">
-            {{ getStatusLabel(book.status) }}
+        <div class="book-main">
+          <div class="book-cover-wrapper" *ngIf="book.coverThumbnailUrl; else noCover">
+            <img
+              [src]="book.coverThumbnailUrl"
+              [alt]="book.title + ' cover'"
+              class="book-cover"
+            />
           </div>
-          <div class="rating" *ngIf="book.personalRating">
-            Rating: <span class="rating-value">{{ book.personalRating }}/5</span>
+          <ng-template #noCover>
+            <div class="book-cover placeholder">
+              <mat-icon>menu_book</mat-icon>
+            </div>
+          </ng-template>
+
+          <div class="book-details">
+            <div class="book-info">
+              <div class="status-badge" [ngClass]="'status-' + book.status">
+                {{ getStatusLabel(book.status) }}
+              </div>
+              <div class="rating" *ngIf="book.personalRating">
+                Rating: <span class="rating-value">{{ book.personalRating }}/5</span>
+              </div>
+            </div>
+
+            <div class="meta-row">
+              <span class="meta-item" *ngIf="book.isbn">ISBN: {{ book.isbn }}</span>
+              <span class="meta-item" *ngIf="book.pageCount">
+                {{ book.pageCount }} pages
+              </span>
+            </div>
+
+            <p class="summary" *ngIf="book.note">{{ book.note }}</p>
           </div>
         </div>
-        <p class="summary" *ngIf="book.note">{{ book.note }}</p>
       </mat-card-content>
       <mat-card-actions align="end">
         <button mat-icon-button color="primary" (click)="editBook(book)">

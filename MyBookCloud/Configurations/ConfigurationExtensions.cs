@@ -2,6 +2,8 @@
 using MyBookCloud.Business.Books;
 using MyBookCloud.Business.SeedWork;
 using MyBookCloud.Core.Api.AutoMapperProfiles;
+using MyBookCloud.Core.Api.Connectors;
+using MyBookCloud.Core.Api.Connectors.Impl;
 using MyBookCloud.Core.Api.Services;
 using MyBookCloud.Core.Api.Services.Impl;
 using MyBookCloud.Persistence;
@@ -15,6 +17,7 @@ namespace MyBookCloud.Configurations
         {
             return services.AddScoped<IUnitOfWork<MyBookCloudDbContext>, UnitOfWork<MyBookCloudDbContext>>()
                            .AddTransient<IBookRepository, BookRepository>()
+                           .AddTransient<IGoogleBookApiConnector, GoogleBookApiConnector>()
                            .AddScoped<IBookService, BookService>();
         }
 

@@ -25,6 +25,33 @@ import { Book, ReadingStatus } from '../../models/book.model';
           <input matInput formControlName="isbn">
         </mat-form-field>
 
+        <div class="readonly-section" *ngIf="data">
+          <div class="readonly-header">Google Books info</div>
+
+          <div class="readonly-content">
+            <div class="cover-preview" *ngIf="data.coverThumbnailUrl; else noCoverPreview">
+              <img
+                [src]="data.coverThumbnailUrl"
+                [alt]="data.title + ' cover'"
+              />
+            </div>
+            <ng-template #noCoverPreview>
+              <div class="cover-preview placeholder">
+                <mat-icon>menu_book</mat-icon>
+              </div>
+            </ng-template>
+
+            <div class="readonly-meta">
+              <div class="meta-line">
+                <span class="label">Pages:</span>
+                <span class="value">
+                  {{ data.pageCount || 'N/A' }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <mat-form-field appearance="fill">
           <mat-label>Status</mat-label>
           <mat-select formControlName="status">
@@ -55,11 +82,61 @@ import { Book, ReadingStatus } from '../../models/book.model';
       display: flex;
       flex-direction: column;
       gap: 10px;
-      min-width: 300px;
+      min-width: 320px;
       padding: 10px 0;
     }
     mat-form-field {
       width: 100%;
+    }
+    .readonly-section {
+      margin-top: 8px;
+      padding: 12px;
+      border-radius: 8px;
+      background: #fafafa;
+      border: 1px dashed rgba(0,0,0,0.08);
+    }
+    .readonly-header {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #757575;
+      margin-bottom: 8px;
+    }
+    .readonly-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .cover-preview {
+      width: 64px;
+      height: 96px;
+      border-radius: 4px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      background: #f5f5f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cover-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .cover-preview.placeholder {
+      color: #bdbdbd;
+    }
+    .readonly-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.9rem;
+      color: #616161;
+    }
+    .meta-line .label {
+      font-weight: 500;
+      margin-right: 4px;
     }
   `]
 })

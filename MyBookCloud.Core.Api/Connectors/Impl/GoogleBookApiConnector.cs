@@ -1,28 +1,87 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System;
+using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
+using MyBookCloud.Core.Api.Dto;
 
 namespace MyBookCloud.Core.Api.Connectors.Impl
 {
-    public class GoogleBookApiConnector
+    public class GoogleBookApiConnector : IGoogleBookApiConnector
     {
-        public void GetVolumeInfo()
-        {
+        private readonly HttpClient _httpClient;
+        private readonly ILogger<GoogleBookApiConnector> _logger;
+        private readonly string? _apiKey;
 
+        public GoogleBookApiConnector(IConfiguration configuration,
+                                      ILogger<GoogleBookApiConnector> logger)
+        {
+            _logger = logger;
+            _apiKey = configuration["GoogleBooks:ApiKey"];
+
+            _httpClient = new HttpClient
+            {
+                BaseAddress = new Uri("https://www.googleapis.com"),
+                Timeout = TimeSpan.FromSeconds(30)
+            };
         }
 
-        private HttpClient GetGoogleBookApiHttpClient(Uri baseUri, string token, int timeout = 180)
+        public async Task<GoogleBookVolumeInfoDto?> GetVolumeInfoAsync(string isbn)
         {
-            var httpClient = new HttpClient
+            if (string.IsNullOrWhiteSpace(isbn))
             {
-                Timeout = TimeSpan.FromSeconds(timeout)
-            };
+                return null;
+            }
 
-            httpClient.BaseAddress = baseUri;
+            if (string.IsNullOrWhiteSpace(_apiKey))
+            {
+                _logger.LogWarning("GoogleBooks:ApiKey is not configured. Skipping Google Books lookup.");
+                return null;
+            }
 
-            return httpClient;
+            try
+            {
+                var requestUri = $"/books/v1/volumes?q=isbn:{Uri.EscapeDataString(isbn)}&key={_apiKey}";
+                var response = await _httpClient.GetAsync(requestUri);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogWarning("Google Books API returned non-success status code {StatusCode} for ISBN {Isbn}.",
+                        response.StatusCode, isbn);
+                    return null;
+                }
+
+                await using var stream = await response.Content.ReadAsStreamAsync();
+
+                var apiResponse = await JsonSerializer.DeserializeAsync<GoogleBooksApiResponseDto>(
+                    stream,
+                    new JsonSerializerOptions
+                    {
+                        PropertyNameCaseInsensitive = true
+                    });
+
+                if (apiResponse == null || apiResponse.TotalItems <= 0 || apiResponse.Items == null || apiResponse.Items.Count == 0)
+                {
+                    _logger.LogInformation("No Google Books volume found for ISBN {Isbn}.", isbn);
+                    return null;
+                }
+
+                var volumeInfo = apiResponse.Items[0].VolumeInfo;
+                if (volumeInfo == null)
+                {
+                    _logger.LogInformation("Google Books volumeInfo is missing for ISBN {Isbn}.", isbn);
+                    return null;
+                }
+
+                return volumeInfo;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while calling Google Books API for ISBN {Isbn}.", isbn);
+                return null;
+            }
         }
     }
 }
+
