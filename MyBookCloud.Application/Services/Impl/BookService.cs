@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using MyBookCloud.Application.Connectors;
 using MyBookCloud.Application.Dto;
+using MyBookCloud.Application.Services;
 using MyBookCloud.Business.Books;
 using MyBookCloud.Business.SeedWork;
 using MyBookCloud.Common.Messages;
@@ -18,26 +19,35 @@ namespace MyBookCloud.Application.Services.Impl
         private readonly IUnitOfWork<MyBookCloudDbContext> _unitOfWork;
         private readonly IPublishEndpoint _publish;
         private readonly IGoogleBookApiConnector _googleConnector;
+        private readonly ICurrentUserService _currentUser;
 
         public BookService(IMapper mapper, IBookRepository bookRepository, IUnitOfWork<MyBookCloudDbContext> unitOfWork,
-            IPublishEndpoint publish, IGoogleBookApiConnector googleConnector)
+            IPublishEndpoint publish, IGoogleBookApiConnector googleConnector, ICurrentUserService currentUser)
         {
             _mapper = mapper;
             _bookRepository = bookRepository;
             _unitOfWork = unitOfWork;
             _publish = publish;
             _googleConnector = googleConnector;
+            _currentUser = currentUser;
         }
 
         public async Task<List<BookData>> GetAllBooksAsync()
         {
-            var books = await _bookRepository.GetAll().OrderBy(x => x.Title).ToListAsync();
+            var userId = _currentUser.UserId ?? throw new InvalidOperationException("User is not authenticated.");
+
+            var books = await _bookRepository
+                .GetAll()
+                .Where(x => x.CreatedById == userId)
+                .OrderBy(x => x.Title)
+                .ToListAsync();
             return _mapper.Map<List<BookData>>(books);
         }
 
         public async Task<BookData> AddBookAsync(BookData bookData)
         {
             var bookEntity = _mapper.Map<BookEntity>(bookData);
+            bookEntity.CreatedById = _currentUser.UserId ?? throw new InvalidOperationException("User is not authenticated.");
             _bookRepository.Add(bookEntity);
             await _unitOfWork.SaveChangesAsync();
             await _publish.Publish<IBookCreatedMessage>(new

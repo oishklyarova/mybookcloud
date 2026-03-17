@@ -9,7 +9,7 @@
     <Project Path="MyBookCloud.Persistence/MyBookCloud.Persistence.csproj" Id="06f08df2-840e-42b6-a5e0-9f87e6e0143c" />
   </Folder>
   <Folder Name="/03.Application/">
-    <Project Path="MyBookCloud.Core.Api/MyBookCloud.Application.csproj" />
+    <Project Path="MyBookCloud.Application/MyBookCloud.Application.csproj" />
   </Folder>
   <Folder Name="/04.Infrastructure/">
     <Project Path="MyBookCloud.Infrastructure/MyBookCloud.Infrastructure.csproj" Id="5e2d1f6f-1d25-47c3-addd-886dc7fe75ef" />

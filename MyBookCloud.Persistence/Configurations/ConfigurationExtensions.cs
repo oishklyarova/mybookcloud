@@ -3,6 +3,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MyBookCloud.Business.Books;
 using MyBookCloud.Business.SeedWork;
+using MyBookCloud.Business.Users;
 using MyBookCloud.Persistence.Repositories;
 
 namespace MyBookCloud.Persistence.Configurations
@@ -14,7 +15,8 @@ namespace MyBookCloud.Persistence.Configurations
             services.AddDbContext<MyBookCloudDbContext>(options =>
                 options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
             return services.AddScoped<IUnitOfWork<MyBookCloudDbContext>, UnitOfWork<MyBookCloudDbContext>>()
-                           .AddTransient<IBookRepository, BookRepository>();
+                           .AddTransient<IBookRepository, BookRepository>()
+                           .AddTransient<IUserRepository, UserRepository>();
         }
     }
 }

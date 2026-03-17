@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MyBookCloud.Business.Books;
+using MyBookCloud.Business.Users;
 
 namespace MyBookCloud.Persistence
 {
@@ -10,6 +11,7 @@ namespace MyBookCloud.Persistence
         public MyBookCloudDbContext() { }
 
         public DbSet<BookEntity> Books => Set<BookEntity>();
+        public DbSet<UserEntity> Users => Set<UserEntity>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -20,6 +22,17 @@ namespace MyBookCloud.Persistence
             modelBuilder.Entity<BookEntity>().Property(e => e.PersonalRating);
             modelBuilder.Entity<BookEntity>().Property(e => e.CoverThumbnailUrl);
             modelBuilder.Entity<BookEntity>().Property(e => e.PageCount);
+            modelBuilder.Entity<BookEntity>().Property(e => e.CreatedById).IsRequired();
+            modelBuilder.Entity<BookEntity>()
+                        .HasOne<UserEntity>()
+                        .WithMany()
+                        .HasForeignKey(e => e.CreatedById)
+                        .OnDelete(DeleteBehavior.Cascade);
+
+
+            modelBuilder.Entity<UserEntity>().Property(e => e.Id).IsRequired();
+            modelBuilder.Entity<UserEntity>().Property(e => e.Email).IsRequired();
+            modelBuilder.Entity<UserEntity>().Property(e => e.PasswordHash).IsRequired();
         }
     }
 }

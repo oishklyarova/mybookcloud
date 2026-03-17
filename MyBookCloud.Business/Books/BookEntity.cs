@@ -21,5 +21,7 @@ namespace MyBookCloud.Business.Books
         public string? CoverThumbnailUrl { get; set; }
 
         public int? PageCount { get; set; }
+
+        public Guid CreatedById { get; set; }
     }
 }

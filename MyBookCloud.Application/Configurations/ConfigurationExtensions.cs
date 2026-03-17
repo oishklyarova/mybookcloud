@@ -12,7 +12,8 @@ namespace MyBookCloud.Application.Configurations
         public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
             services.ConfigureMapper();
-            return services.AddTransient<IBookService, BookService>();
+            return services.AddTransient<IBookService, BookService>()
+                .AddTransient<IAuthService, AuthService>();
         }
 
         private static IServiceCollection ConfigureMapper(this IServiceCollection services)

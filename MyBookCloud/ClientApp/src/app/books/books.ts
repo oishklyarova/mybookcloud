@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
+import { Router } from '@angular/router';
 import { BooksService } from '../services/books.service';
 import { Book as BookModel, ReadingStatus } from '../models/book.model';
 import { BookFormComponent } from './book-form/book-form.component';
+import { AccountService } from '../services/account.service';
 
 @Component({
   selector: 'app-books',
@@ -18,7 +20,9 @@ export class Books implements OnInit {
 
   constructor(
     private booksService: BooksService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private accountService: AccountService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -80,6 +84,11 @@ export class Books implements OnInit {
         error: (err) => console.error('Error deleting book:', err)
       });
     }
+  }
+
+  logout(): void {
+    this.accountService.logout();
+    this.router.navigate(['/login']);
   }
 
   getStatusLabel(status: ReadingStatus): string {

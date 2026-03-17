@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MyBookCloud.Application.Dto;
 using MyBookCloud.Application.Services;
@@ -5,6 +6,7 @@ using MyBookCloud.Application.Services;
 namespace MyBookCloud.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class BooksController : ControllerBase
     {

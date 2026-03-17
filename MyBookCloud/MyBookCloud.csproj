@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MyBookCloud.Core.Api\MyBookCloud.Application.csproj" />
+    <ProjectReference Include="..\MyBookCloud.Application\MyBookCloud.Application.csproj" />
     <ProjectReference Include="..\MyBookCloud.Infrastructure\MyBookCloud.Infrastructure.csproj" />
     <ProjectReference Include="..\MyBookCloud.Persistence\MyBookCloud.Persistence.csproj" />
   </ItemGroup>

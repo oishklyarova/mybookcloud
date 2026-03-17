@@ -1,6 +1,6 @@
 import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -16,12 +16,15 @@ import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { Books } from './books/books';
 import { BookFormComponent } from './books/book-form/book-form.component';
+import { LoginComponent } from './auth/login.component';
+import { AuthInterceptor } from './auth/auth.interceptor';
 
 @NgModule({
   declarations: [
     App,
     Books,
-    BookFormComponent
+    BookFormComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -38,7 +41,12 @@ import { BookFormComponent } from './books/book-form/book-form.component';
     MatFormFieldModule
   ],
   providers: [
-    provideBrowserGlobalErrorListeners()
+    provideBrowserGlobalErrorListeners(),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [App]
 })
