@@ -1,0 +1,70 @@
+<h2 mat-dialog-title>{{ data ? 'Edit Book' : 'Add New Book' }}</h2>
+<mat-dialog-content>
+  <form [formGroup]="bookForm" class="form-container">
+    <mat-form-field appearance="fill">
+      <mat-label>Title</mat-label>
+      <input matInput formControlName="title" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Author</mat-label>
+      <input matInput formControlName="author" required>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>ISBN</mat-label>
+      <input matInput formControlName="isbn">
+    </mat-form-field>
+
+    <div class="readonly-section" *ngIf="data">
+      <div class="readonly-header">Google Books info</div>
+
+      <div class="readonly-content">
+        <div class="cover-preview" *ngIf="data.coverThumbnailUrl; else noCoverPreview">
+          <img
+            [src]="data.coverThumbnailUrl"
+            [alt]="data.title + ' cover'"
+          />
+        </div>
+        <ng-template #noCoverPreview>
+          <div class="cover-preview placeholder">
+            <mat-icon>menu_book</mat-icon>
+          </div>
+        </ng-template>
+
+        <div class="readonly-meta">
+          <div class="meta-line">
+            <span class="label">Pages:</span>
+            <span class="value">
+              {{ data.pageCount || 'N/A' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Status</mat-label>
+      <mat-select formControlName="status">
+        <mat-option [value]="0">Reading</mat-option>
+        <mat-option [value]="1">Want to Read</mat-option>
+        <mat-option [value]="2">Finished</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Personal Rating (1-5)</mat-label>
+      <input matInput type="number" formControlName="personalRating" min="1" max="5">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Notes</mat-label>
+      <textarea matInput formControlName="note" rows="3"></textarea>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" [disabled]="bookForm.invalid" (click)="onSave()">Save</button>
+</mat-dialog-actions>
+

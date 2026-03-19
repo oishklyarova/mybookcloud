@@ -95,8 +95,8 @@ namespace MyBookCloud.Application.Services.Impl
             var book = await _bookRepository.FindAsync(bookId);
             if (book == null) return;
 
-            book.CoverThumbnailUrl = volumeInfo.ThumbnailUrl;
-            book.PageCount = volumeInfo.PageCount;
+            book.CoverThumbnailUrl = volumeInfo?.ThumbnailUrl;
+            book.PageCount = volumeInfo?.PageCount;
 
             await _unitOfWork.SaveChangesAsync();
 

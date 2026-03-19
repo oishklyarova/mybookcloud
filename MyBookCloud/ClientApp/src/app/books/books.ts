@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs';
   selector: 'app-books',
   standalone: false,
   templateUrl: './books.html',
-  styleUrl: './books.css'
+  styleUrls: ['./books.css']
 })
 export class Books implements OnInit, OnDestroy {
   books: BookModel[] = [];

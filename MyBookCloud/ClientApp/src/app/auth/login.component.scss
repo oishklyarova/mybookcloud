@@ -1,0 +1,29 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+}
+
+mat-card {
+  width: 360px;
+  padding: 16px;
+}
+
+mat-form-field {
+  width: 100%;
+}
+
+.actions {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.error {
+  margin-top: 8px;
+  color: #c62828;
+  font-size: 0.9rem;
+}
+
