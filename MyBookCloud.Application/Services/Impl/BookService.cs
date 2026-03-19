@@ -53,7 +53,8 @@ namespace MyBookCloud.Application.Services.Impl
             await _publish.Publish<IBookCreatedMessage>(new
             {
                 BookId = bookEntity.Id,
-                bookEntity.Isbn
+                bookEntity.Isbn,
+                UserId = bookEntity.CreatedById
             });
             return _mapper.Map<BookData>(bookEntity);
         }
@@ -85,7 +86,7 @@ namespace MyBookCloud.Application.Services.Impl
             return true;
         }
 
-        public async Task EnrichBookDataAsync(Guid bookId, string isbn)
+        public async Task EnrichBookDataAsync(Guid bookId, string isbn, Guid userId)
         {
             if (string.IsNullOrWhiteSpace(isbn)) return;
 
@@ -98,6 +99,14 @@ namespace MyBookCloud.Application.Services.Impl
             book.PageCount = volumeInfo.PageCount;
 
             await _unitOfWork.SaveChangesAsync();
+
+            await _publish.Publish<IBookEnrichedMessage>(new
+            {
+                BookId = book.Id,
+                CoverThumbnailUrl = book.CoverThumbnailUrl,
+                PageCount = book.PageCount,
+                UserId = userId
+            });
         }
     }
 }

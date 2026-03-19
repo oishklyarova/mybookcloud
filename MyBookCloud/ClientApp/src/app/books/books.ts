@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { BooksService } from '../services/books.service';
 import { Book as BookModel, ReadingStatus } from '../models/book.model';
 import { BookFormComponent } from './book-form/book-form.component';
 import { AccountService } from '../services/account.service';
+import { BookSignalRService } from '../services/book-signalr.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-books',
@@ -12,21 +14,28 @@ import { AccountService } from '../services/account.service';
   templateUrl: './books.html',
   styleUrl: './books.css'
 })
-export class Books implements OnInit {
+export class Books implements OnInit, OnDestroy {
   books: BookModel[] = [];
   loading = false;
   error: string | null = null;
   ReadingStatus = ReadingStatus;
+  private subscriptions = new Subscription();
 
   constructor(
     private booksService: BooksService,
     private dialog: MatDialog,
     private accountService: AccountService,
+    private bookSignalRService: BookSignalRService,
     private router: Router
   ) { }
 
   ngOnInit(): void {
     this.loadBooks();
+    this.subscribeToRealtimeUpdates();
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   loadBooks(): void {
@@ -44,6 +53,28 @@ export class Books implements OnInit {
         console.error('Error loading books:', err);
       }
     });
+  }
+
+  private subscribeToRealtimeUpdates(): void {
+    const sub = this.bookSignalRService.bookUpdated$.subscribe(update => {
+      if (!update?.id) {
+        return;
+      }
+
+      const normalizedUpdateId = update.id.toLowerCase();
+      const index = this.books.findIndex(b => (b.id ?? '').toLowerCase() === normalizedUpdateId);
+      if (index === -1) {
+        return;
+      }
+
+      this.books[index] = {
+        ...this.books[index],
+        coverThumbnailUrl: update.coverThumbnailUrl ?? this.books[index].coverThumbnailUrl,
+        pageCount: update.pageCount ?? this.books[index].pageCount
+      };
+    });
+
+    this.subscriptions.add(sub);
   }
 
   addBook(): void {

@@ -20,7 +20,7 @@ namespace MyBookCloud.Worker.Consumers
         {
             _logger.LogInformation(" [*] Message received BookId: {id}, ISBN: {isbn} ", context.Message.BookId, context.Message.Isbn);
 
-            await _bookService.EnrichBookDataAsync(context.Message.BookId, context.Message.Isbn);
+            await _bookService.EnrichBookDataAsync(context.Message.BookId, context.Message.Isbn, context.Message.UserId);
         }
     }
 }

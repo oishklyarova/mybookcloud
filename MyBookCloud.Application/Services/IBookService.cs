@@ -8,7 +8,7 @@ namespace MyBookCloud.Application.Services
         Task<BookData> AddBookAsync(BookData bookData);
         Task<BookData?> UpdateBookAsync(Guid id, BookData bookData);
         Task<bool> DeleteBookAsync(Guid id);
-        Task EnrichBookDataAsync(Guid bookId, string isbn);
+        Task EnrichBookDataAsync(Guid bookId, string isbn, Guid userId);
     }
 }
 

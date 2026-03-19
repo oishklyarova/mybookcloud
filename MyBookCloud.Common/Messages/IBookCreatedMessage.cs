@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +11,7 @@ namespace MyBookCloud.Common.Messages
         public Guid BookId { get; set; }
 
         public string Isbn { get; set; }
+
+        public Guid UserId { get; set; }
     }
 }

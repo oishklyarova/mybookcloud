@@ -5,8 +5,11 @@ using Microsoft.IdentityModel.Tokens;
 using MyBookCloud.Application.Configurations;
 using MyBookCloud.Infrastructure.Configurations;
 using MyBookCloud.Persistence.Configurations;
+using MyBookCloud.Consumers;
+using MyBookCloud.Hubs;
 using Serilog;
 using System.Text;
+using System.Threading.Tasks;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,8 +21,13 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSignalR();
+
 builder.Services.AddMassTransit(x =>
 {
+    x.SetKebabCaseEndpointNameFormatter();
+    x.AddConsumer<BookEnrichedConsumer>();
+
     x.UsingRabbitMq((context, cfg) =>
     {
         cfg.Host(builder.Configuration["Bus:RabbitMqHost"], builder.Configuration["Bus:RabbitMqVirtualHost"], h =>
@@ -27,6 +35,8 @@ builder.Services.AddMassTransit(x =>
             h.Username(builder.Configuration["Bus:RabbitMqUsername"]);
             h.Password(builder.Configuration["Bus:RabbitMqPassword"]);
         });
+
+        cfg.ConfigureEndpoints(context);
     });
 });
 
@@ -44,6 +54,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
             ValidateIssuer = false,
             ValidateAudience = false
+        };
+
+        // Для SignalR токен передається клієнтом у query string (`access_token`)
+        // (особливо для WebSocket транспорту). Без цього хаб буде неавторизований,
+        // а події до клієнта не дійдуть.
+        opt.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = ctx =>
+            {
+                var accessToken = ctx.Request.Query["access_token"].ToString();
+                var path = ctx.HttpContext.Request.Path;
+
+                if (!string.IsNullOrWhiteSpace(accessToken) && path.StartsWithSegments("/hubs/books"))
+                {
+                    ctx.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
         };
     });
 
@@ -65,5 +94,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<BookHub>("/hubs/books");
 
 app.Run();
