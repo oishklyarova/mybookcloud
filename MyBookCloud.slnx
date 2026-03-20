@@ -21,4 +21,8 @@
     <Project Path="MyBookCloud.Worker/MyBookCloud.Worker.csproj" Id="97c81595-1430-4690-8a64-582f1ddcee31" />
     <Project Path="MyBookCloud/MyBookCloud.csproj" />
   </Folder>
+  <Folder Name="/Solution Items/">
+    <File Path="docker-compose.yml" />
+    <File Path="README.md" />
+  </Folder>
 </Solution>

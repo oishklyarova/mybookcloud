@@ -3,10 +3,11 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using MyBookCloud.Application.Configurations;
-using MyBookCloud.Infrastructure.Configurations;
-using MyBookCloud.Persistence.Configurations;
 using MyBookCloud.Consumers;
 using MyBookCloud.Hubs;
+using MyBookCloud.Infrastructure.Configurations;
+using MyBookCloud.Persistence;
+using MyBookCloud.Persistence.Configurations;
 using Serilog;
 using System.Text;
 
@@ -83,12 +84,34 @@ builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+using (var scope = app.Services.CreateScope())
 {
+    var services = scope.ServiceProvider;
+    var context = services.GetRequiredService<MyBookCloudDbContext>();
+
+    // Спробуємо 10 разів з паузою в 2 секунди
+    for (int i = 0; i < 10; i++)
+    {
+        try
+        {
+            context.Database.Migrate();
+            Console.WriteLine("---> Database is ready!");
+            break; // Перемога, виходимо з циклу
+        }
+        catch (Exception)
+        {
+            Console.WriteLine("---> Database is not ready yet, retrying...");
+            Thread.Sleep(2000); // Чекаємо 2 секунди
+        }
+    }
+}
+
+// Configure the HTTP request pipeline.
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseHttpsRedirection();
 

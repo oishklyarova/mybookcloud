@@ -1,12 +1,12 @@
 {
   "/api": {
-    "target": "https://localhost:7126",
+    "target": "http://api:80",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
   },
   "/hubs": {
-    "target": "https://localhost:7126",
+    "target": "http://api:80",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug",

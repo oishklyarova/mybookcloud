@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: mybookcloud_db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=mybookcloud
+    ports:
+      - "5433:5432"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: mybookcloud_rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672" # Адмінка RabbitMQ (guest/guest)
+
+  api:
+    build:
+      context: .
+      dockerfile: MyBookCloud/Dockerfile
+    container_name: mybookcloud_api
+    ports:
+      - "7126:80"     # API буде доступний за цією адресою
+    depends_on:
+      - db
+      - rabbitmq
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=mybookcloud;Username=postgres;Password=123
+      - Bus__RabbitMqHost=rabbitmq
+      - Bus__RabbitMqUsername=guest
+      - Bus__RabbitMqPassword=guest
+      - Bus__RabbitMqVirtualHost=/
+      - Jwt__Key=fS7yXN8vPqZ9mL2kR5jH4nB6vC8xZ0aQ2wE4rT6yU8i=
+
+  worker:
+    build:
+      context: .
+      dockerfile: MyBookCloud.Worker/Dockerfile
+    container_name: mybookcloud_worker
+    depends_on:
+      - db
+      - rabbitmq
+    environment:
+      - ConnectionStrings__DefaultConnection=Host=db;Port=5432;Database=mybookcloud;Username=postgres;Password=123
+      - Bus__RabbitMqHost=rabbitmq
+      - Bus__RabbitMqUsername=guest
+      - Bus__RabbitMqPassword=guest
+      - Bus__RabbitMqVirtualHost=/
+      - GoogleBooks__ApiKey=AIzaSyD39PREoNyWkptk9DgBOiooLZ-5DBi2ymE
+
+  frontend:
+        image: node:20-alpine
+        container_name: mybookcloud_frontend
+        working_dir: /app
+        volumes:
+          - ./MyBookCloud/ClientApp:/app
+        ports:
+          - "49375:49375"
+        command: >
+          sh -c "npm install && npx ng serve --host 0.0.0.0 --port 49375"
+        depends_on:
+          - api
