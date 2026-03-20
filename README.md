@@ -1,5 +1,4 @@
-📚 MyBookCloud: Event-Driven Book Management System
-
+📚 MyBookCloud: Event-Driven Book Management System:
 	Професійний мікросервісний проєкт, побудований на базі .NET 7, Angular, MassTransit та SignalR. Система демонструє сучасні підходи до побудови масштабованих додатків з використанням черг повідомлень та оновлень у реальному часі.
 
 🚀 Основні можливості
