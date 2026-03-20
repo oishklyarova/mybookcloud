@@ -34,7 +34,7 @@ namespace MyBookCloud.Persistence.Migrations
                     new Guid("00000000-0000-0000-0000-000000000001"),
                     "admin@test.com",
                     // BCrypt hash for password: admin123
-                    "$2a$11$uQc9Z3t/8b1U1Y3VbkqS9uSgdMp3L7hIwrKyYVJZZzKzbwQ6vurIW",
+                    "$2a$11$3n3/Dt6ow5z9QQPV76m.OeEMSwD/Totw3qQndM6Yqk4ZsuuBm.7/S",
                     DateTime.UtcNow
                 });
         }
