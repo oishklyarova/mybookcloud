@@ -1,4 +1,5 @@
 📚 MyBookCloud: Event-Driven Book Management System
+
 	Професійний мікросервісний проєкт, побудований на базі .NET 7, Angular, MassTransit та SignalR. Система демонструє сучасні підходи до побудови масштабованих додатків з використанням черг повідомлень та оновлень у реальному часі.
 
 🚀 Основні можливості
@@ -27,7 +28,7 @@
 	docker-compose up --build
 
 	Відкрийте додаток у браузері:
-	Frontend: http://localhost:49375 (або порт 49375)
+	Frontend: http://localhost:49375
 	API Swagger: http://localhost:7126/swagger
 	RabbitMQ Management: http://localhost:15672 (guest/guest)
 👤 Дані для входу (Default User)
